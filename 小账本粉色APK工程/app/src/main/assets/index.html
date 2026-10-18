@@ -3,113 +3,662 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#e89aa5">
-<title>小账本</title>
+<meta name="theme-color" content="#fff8f5">
+<title>小账本 2.0</title>
 <style>
-:root{--bg:#fff8f5;--card:#fffdfb;--ink:#594746;--muted:#a18b88;--accent:#e89aa5;--accent2:#f6c9cc;--red:#d96f83;--line:#f3e3df}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);font-family:system-ui,-apple-system,"Noto Sans SC",sans-serif;color:var(--ink);padding:18px 14px 36px}
-main{max-width:560px;margin:auto}.top{display:flex;align-items:center;justify-content:space-between;margin:6px 2px 18px}.top h1{font-size:25px;margin:0}.tag{font-size:12px;color:#c97883;background:#fdebed;padding:6px 10px;border-radius:99px}
-.card{background:var(--card);border-radius:20px;padding:18px;margin-bottom:14px;box-shadow:0 5px 22px #b77b7412}
-label{font-size:13px;color:var(--muted);display:block;margin-bottom:7px}input,select,button{font:inherit}input,select{width:100%;border:1px solid var(--line);border-radius:12px;padding:12px;background:#fff;color:var(--ink);outline:none}input:focus,select:focus{border-color:#c97883}
-.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}.field{min-width:0}.budget-head{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}.big{font-size:28px;font-weight:750;letter-spacing:-.5px;margin:3px 0}.sub{font-size:12px;color:var(--muted)}.progress{height:13px;background:#f7e9e3;border-radius:99px;overflow:hidden;margin:15px 0 8px}.bar{height:100%;width:0;background:linear-gradient(90deg,#e89aa5,#f5c4c7);border-radius:99px;transition:width .3s}.bar.over{background:linear-gradient(90deg,#d96f83,#f4a7a0)}.progress-meta{display:flex;justify-content:space-between;font-size:12px;color:var(--muted)}.section-title{font-size:16px;font-weight:700;margin:0 0 14px}.btn{border:0;border-radius:12px;padding:12px 15px;background:var(--accent);color:#fff;font-weight:650;cursor:pointer}.btn:active{transform:scale(.99)}.btn.secondary{background:#fdebed;color:#c97883}.btn.full{width:100%;margin-top:13px}.summary{display:grid;grid-template-columns:1fr 1fr;gap:10px}.summary .box{background:#fff4f1;border-radius:14px;padding:13px}.summary .number{font-size:20px;font-weight:750;margin-top:5px;overflow-wrap:anywhere}.expense{display:flex;align-items:center;gap:11px;padding:13px 0;border-bottom:1px solid var(--line)}.expense:last-child{border-bottom:0;padding-bottom:0}.icon{width:42px;height:42px;border-radius:14px;background:#fdebed;display:grid;place-items:center;font-size:20px;flex-shrink:0}.exp-main{flex:1;min-width:0}.exp-title{font-weight:650;overflow-wrap:anywhere}.exp-note{font-size:12px;color:var(--muted);margin-top:4px}.amount{font-weight:750;color:var(--red);white-space:nowrap}.delete{border:0;background:transparent;color:#aaa;font-size:18px;padding:5px 0 5px 8px}.empty{text-align:center;color:var(--muted);font-size:13px;padding:22px 0}.hint{font-size:12px;color:var(--muted);line-height:1.6;margin:10px 2px}.danger{color:var(--red)}@media(max-width:360px){.row{grid-template-columns:1fr}.big{font-size:24px}}
+:root{
+  --bg:#fff8f5;
+  --card:#fffdfb;
+  --ink:#594746;
+  --muted:#a18b88;
+  --accent:#e89aa5;
+  --accent-deep:#cf7482;
+  --accent-soft:#fdebed;
+  --green:#73a98b;
+  --green-soft:#edf8f1;
+  --red:#d96f83;
+  --line:#f3e3df;
+  --shadow:0 8px 26px #b77b7412;
+}
+*{box-sizing:border-box}
+html{background:var(--bg)}
+body{
+  margin:0;
+  min-height:100vh;
+  color:var(--ink);
+  background:
+    radial-gradient(circle at 8% 0%,#ffe7e9 0,transparent 32%),
+    radial-gradient(circle at 100% 18%,#fff0df 0,transparent 30%),
+    var(--bg);
+  font-family:system-ui,-apple-system,"Noto Sans SC","PingFang SC",sans-serif;
+  padding:14px 14px 112px;
+}
+button,input,select{font:inherit}
+button{color:inherit}
+.app-shell{max-width:560px;margin:0 auto}
+.top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:7px 3px 14px}
+.brand{min-width:0}
+.eyebrow{font-size:12px;letter-spacing:.5px;color:var(--accent-deep);font-weight:700}
+.top h1{font-size:24px;line-height:1.2;margin:5px 0 0;letter-spacing:-.5px}
+.tag{flex-shrink:0;font-size:11px;color:#bd747d;background:#fdebed;border:1px solid #f8dfe1;padding:6px 9px;border-radius:999px;white-space:nowrap}
+.month-bar{display:grid;grid-template-columns:42px minmax(0,1fr) 42px;align-items:center;gap:8px;margin-bottom:14px}
+.month-label{display:block;min-width:0}
+.month-label span{display:none}
+.month-label input{width:100%;height:42px;border:1px solid var(--line);border-radius:14px;padding:8px 10px;text-align:center;color:var(--ink);background:#fffdfbcc}
+.month-arrow{width:42px;height:42px;border:1px solid var(--line);border-radius:14px;background:#fffdfbcc;color:var(--accent-deep);font-size:24px;line-height:1;cursor:pointer}
+.card{background:var(--card);border:1px solid #fff1ed;border-radius:22px;padding:18px;margin-bottom:14px;box-shadow:var(--shadow)}
+.hero-card{background:linear-gradient(145deg,#fffdfb 0%,#fff3f2 100%);border-color:#fde7e5}
+.hero-head,.card-head,.progress-row,.about-row{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.hero-head{font-size:13px;color:var(--muted)}
+.month-badge{font-size:11px;color:var(--accent-deep);background:var(--accent-soft);padding:5px 9px;border-radius:999px}
+.hero-balance{font-size:34px;font-weight:800;letter-spacing:-1px;margin:8px 0 2px}
+.hero-note{font-size:12px;color:var(--muted)}
+.metric-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}
+.metric{background:#fffaf8;border:1px solid #f8e9e4;border-radius:15px;padding:12px}
+.metric strong{display:block;font-size:19px;margin-top:5px;letter-spacing:-.3px}
+.income{color:var(--green)!important}
+.expense{color:var(--red)!important}
+.sub{font-size:12px;color:var(--muted)}
+.card-head h2,.card h2{font-size:16px;margin:0}
+.text-btn{border:0;background:transparent;color:var(--accent-deep);font-size:12px;padding:7px 0 7px 8px;cursor:pointer;white-space:nowrap}
+.progress-block{padding:14px 0;border-bottom:1px dashed var(--line)}
+.progress-block:last-of-type{border-bottom:0;padding-bottom:4px}
+.progress-row{font-size:13px;margin-bottom:8px}
+.progress-row span:last-child{font-size:12px;color:var(--muted)}
+.progress{height:12px;background:#f7e9e3;border-radius:999px;overflow:hidden;margin:8px 0}
+.bar{height:100%;width:0;border-radius:999px;background:linear-gradient(90deg,#e89aa5,#f5c4c7);transition:width .35s ease}
+.bar.saving{background:linear-gradient(90deg,#f3b78d,#e89aa5)}
+.bar.over{background:linear-gradient(90deg,#d96f83,#f4a7a0)}
+.progress-note{font-size:12px;color:var(--muted);line-height:1.55}
+.btn{border:0;border-radius:13px;min-height:44px;padding:11px 15px;background:var(--accent);color:#fff;font-weight:700;cursor:pointer;transition:transform .15s ease,filter .15s ease}
+.btn:active{transform:scale(.99);filter:brightness(.98)}
+.btn.secondary{background:var(--accent-soft);color:var(--accent-deep)}
+.btn.full{width:100%;margin-top:13px}
+.soft-note{font-size:11px;color:var(--muted)}
+.hint{font-size:12px;color:var(--muted);line-height:1.65;margin:9px 0 0}
+label{display:block;font-size:12px;color:var(--muted);margin-bottom:7px}
+input,select{width:100%;min-height:44px;border:1px solid var(--line);border-radius:13px;padding:10px 12px;background:#fff;color:var(--ink);outline:none}
+input:focus,select:focus{border-color:var(--accent)}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.field{min-width:0}
+.field + .field{margin-top:12px}
+.input-action{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:9px;align-items:center}
+.input-action .btn{white-space:nowrap}
+.segmented{display:grid;grid-template-columns:1fr 1fr;gap:5px;background:#f9eeea;border-radius:14px;padding:4px;margin:14px 0}
+.segmented button{border:0;border-radius:11px;padding:10px;background:transparent;color:var(--muted);font-weight:700;cursor:pointer}
+.segmented button.active{background:#fff;color:var(--accent-deep);box-shadow:0 2px 9px #c48b8c18}
+.record-list{min-height:50px}
+.record{display:flex;align-items:center;gap:11px;padding:12px 0;border-bottom:1px solid var(--line)}
+.record:last-child{border-bottom:0;padding-bottom:0}
+.record-icon{width:42px;height:42px;flex-shrink:0;display:grid;place-items:center;border-radius:14px;background:var(--accent-soft);font-size:19px}
+.record-icon.income{background:var(--green-soft)}
+.record-main{min-width:0;flex:1}
+.record-title{font-weight:700;overflow-wrap:anywhere}
+.record-note{font-size:11px;color:var(--muted);margin-top:4px}
+.record-amount{font-weight:800;white-space:nowrap;font-size:14px}
+.delete{border:0;background:transparent;color:#b6a6a2;font-size:19px;padding:6px 0 6px 4px;cursor:pointer}
+.empty{text-align:center;color:var(--muted);font-size:13px;line-height:1.8;padding:24px 4px}
+.filter-row{display:flex;gap:8px;margin:13px 0 4px;overflow-x:auto;scrollbar-width:none}
+.filter-row::-webkit-scrollbar{display:none}
+.chip{border:1px solid var(--line);border-radius:999px;padding:7px 12px;background:#fff;color:var(--muted);font-size:12px;white-space:nowrap;cursor:pointer}
+.chip.active{background:var(--accent-soft);border-color:#f5d8da;color:var(--accent-deep);font-weight:700}
+.two-fields{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:14px 0}
+.welcome-card{text-align:center;background:linear-gradient(160deg,#fffdfb,#fff0f1)}
+.welcome-emoji{font-size:42px;margin-bottom:5px}
+.welcome-card h2{font-size:22px;margin-bottom:9px}
+.welcome-card p{font-size:13px;line-height:1.8;color:#8e7775;margin:0}
+.kaomoji{margin-top:12px;color:var(--accent-deep);font-size:14px}
+.encouragement{font-size:14px;line-height:1.8;color:#806a67;margin:12px 0 0;padding:14px;border-radius:15px;background:#fff5f2}
+.chart-body{display:grid;grid-template-columns:154px minmax(0,1fr);gap:16px;align-items:center;margin-top:16px}
+.donut{position:relative;width:154px;height:154px;border-radius:50%;background:conic-gradient(#f7e9e3 0 100%);box-shadow:inset 0 0 0 1px #f8e7e2}
+.donut-hole{position:absolute;inset:25px;border-radius:50%;background:var(--card);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:8px}
+.donut-total{font-size:15px;font-weight:800;letter-spacing:-.3px;max-width:100%;overflow-wrap:anywhere}
+.donut-label{font-size:10px;color:var(--muted);margin-top:3px}
+.legend{display:grid;gap:8px;min-width:0}
+.legend-item{display:flex;align-items:center;gap:7px;font-size:12px;min-width:0}
+.legend-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+.legend-name{min-width:0;flex:1;color:#806a67;overflow-wrap:anywhere}
+.legend-value{font-weight:700;white-space:nowrap}
+.chart-empty{text-align:center;color:var(--muted);font-size:13px;line-height:1.8;padding:20px 4px 8px}
+.saving-breakdown{display:grid;gap:8px;margin:14px 0 4px;padding:12px;border:1px solid #f8e9e4;border-radius:14px;background:#fffaf8}
+.saving-line{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:12px;color:var(--muted)}
+.saving-line strong{color:var(--ink)}
+.saved-highlight{padding:9px 10px;border-radius:11px;background:var(--accent-soft);color:var(--accent-deep)!important;font-weight:800}
+.saved-highlight strong{color:var(--accent-deep)}
+.about-row{font-size:13px;padding:10px 0;border-bottom:1px dashed var(--line)}
+.about-row:last-of-type{border-bottom:0}
+.about-row span{color:var(--muted)}
+.tabbar{position:fixed;left:50%;bottom:0;width:min(100%,588px);transform:translateX(-50%);display:grid;grid-template-columns:repeat(5,1fr);gap:2px;padding:7px 8px max(7px,env(safe-area-inset-bottom));background:#fffdfbf2;border-top:1px solid #f6e6e2;box-shadow:0 -8px 28px #b77b7414;backdrop-filter:blur(14px);z-index:20}
+.tab-btn{border:0;background:transparent;padding:6px 1px 4px;border-radius:14px;color:#af9994;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:10px;cursor:pointer}
+.tab-btn .tab-icon{font-size:19px;line-height:1.1;filter:grayscale(.35);opacity:.72}
+.tab-btn.active{color:var(--accent-deep);background:#fff0f1}
+.tab-btn.active .tab-icon{filter:none;opacity:1;transform:translateY(-1px)}
+.screen{display:none}
+.screen.active{display:block;animation:fadeIn .18s ease-out}
+.toast{position:fixed;left:50%;bottom:76px;transform:translate(-50%,10px);background:#5d4a49ee;color:#fff;font-size:13px;padding:10px 15px;border-radius:999px;opacity:0;pointer-events:none;transition:opacity .2s ease,transform .2s ease;z-index:30;white-space:nowrap}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+@keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+@media(max-width:420px){.chart-body{grid-template-columns:1fr;justify-items:center}.legend{width:100%}}
+@media(max-width:360px){body{padding-left:11px;padding-right:11px}.row,.two-fields{grid-template-columns:1fr}.top h1{font-size:22px}.hero-balance{font-size:30px}}
 </style>
 </head>
 <body>
-<main>
-  <header class="top"><h1>🌷 小账本</h1><span class="tag">只保存在本机</span></header>
-  <section class="card">
-    <div class="field">
-      <label for="month">记账月份（可自行切换）</label>
-      <input id="month" type="month">
+<div class="app-shell">
+  <header class="top">
+    <div class="brand">
+      <div class="eyebrow">🌷 小账本 2.0 · 慢慢记</div>
+      <h1 id="greeting">嗨，欢迎回来</h1>
     </div>
-    <div class="budget-head" style="margin-top:18px">
-      <div><div class="sub">本月已支出</div><div class="big" id="spent">¥0.00</div></div>
-      <div style="text-align:right"><div class="sub">你设置的预算/目标</div><div class="big" id="budgetLabel">¥0.00</div></div>
-    </div>
-    <div class="progress" role="progressbar" aria-label="预算使用进度"><div class="bar" id="bar"></div></div>
-    <div class="progress-meta"><span id="progressText">已使用 0%</span><span id="remaining">剩余 ¥0.00</span></div>
-    <div class="field" style="margin-top:17px">
-      <label for="budget">设置本月预算/进度条满格金额（元）</label>
-      <input id="budget" type="number" min="0" step="0.01" placeholder="例如：2000">
-    </div>
-    <button class="btn secondary full" id="saveBudget">保存本月预算</button>
+    <span class="tag">只存在本机</span>
+  </header>
+
+  <section class="month-bar" aria-label="月份切换">
+    <button class="month-arrow" id="prevMonth" type="button" aria-label="上个月">‹</button>
+    <label class="month-label"><span>记账月份</span><input id="month" type="month" aria-label="记账月份"></label>
+    <button class="month-arrow" id="nextMonth" type="button" aria-label="下个月">›</button>
   </section>
 
-  <section class="card">
-    <h2 class="section-title">➕ 记一笔支出</h2>
-    <form id="expenseForm">
-      <div class="row">
-        <div class="field"><label for="amountInput">金额（元）</label><input id="amountInput" type="number" min="0.01" step="0.01" placeholder="例如：18.50" required></div>
-        <div class="field"><label for="category">分类</label><select id="category"><option>餐饮</option><option>购物</option><option>交通</option><option>娱乐</option><option>学习</option><option>生活</option><option>医疗</option><option>其他</option></select></div>
-      </div>
-      <div class="field" style="margin-top:12px"><label for="note">备注（可不填）</label><input id="note" maxlength="80" placeholder="例如：午饭、奶茶、游戏"></div>
-      <div class="field" style="margin-top:12px"><label for="date">支出日期</label><input id="date" type="date" required></div>
-      <button class="btn full" type="submit">记下这笔支出</button>
-    </form>
-  </section>
+  <main>
+    <section class="screen active" id="screen-home" data-screen="home">
+      <article class="card hero-card">
+        <div class="hero-head"><span>本月结余</span><span class="month-badge" id="heroMonth">2026-10</span></div>
+        <div class="hero-balance" id="balance">¥0.00</div>
+        <div class="hero-note">进账 - 支出，慢慢来就好 ♡</div>
+        <div class="metric-grid">
+          <div class="metric"><span class="sub">进账</span><strong class="income" id="incomeTotal">¥0.00</strong></div>
+          <div class="metric"><span class="sub">支出</span><strong class="expense" id="expenseTotal">¥0.00</strong></div>
+        </div>
+      </article>
+      <article class="card">
+        <div class="card-head"><h2>💗 两个小进度</h2><button class="text-btn" type="button" data-go-tab="savings">去调整</button></div>
+        <div class="progress-block">
+          <div class="progress-row"><span>支出预算</span><span id="budgetText">未设置</span></div>
+          <div class="progress" role="progressbar" aria-label="支出预算进度"><div class="bar" id="budgetBarHome"></div></div>
+          <div class="progress-note" id="budgetNote">先设置一个预算吧～</div>
+        </div>
+        <div class="progress-block">
+          <div class="progress-row"><span>攒钱目标</span><span id="savingText">未设置</span></div>
+          <div class="progress" role="progressbar" aria-label="攒钱目标进度"><div class="bar saving" id="savingBarHome"></div></div>
+          <div class="progress-note" id="savingNote">把多出来的钱，也温柔地存起来吧～</div>
+        </div>
+      </article>
+      <article class="card">
+        <div class="card-head"><h2>最近的小记录</h2><button class="text-btn" type="button" data-go-tab="records">查看全部</button></div>
+        <div id="recentList" class="record-list"></div>
+      </article>
+    </section>
 
-  <section class="card">
-    <h2 class="section-title">📊 本月概览</h2>
-    <div class="summary">
-      <div class="box"><div class="sub">支出笔数</div><div class="number" id="count">0 笔</div></div>
-      <div class="box"><div class="sub">平均每笔</div><div class="number" id="average">¥0.00</div></div>
-    </div>
-  </section>
+    <section class="screen" id="screen-add" data-screen="add">
+      <article class="card">
+        <div class="card-head"><h2>记一笔</h2><span class="soft-note" id="entryMonthHint">2026-10</span></div>
+        <div class="segmented" role="tablist" aria-label="记录类型">
+          <button type="button" class="active" data-entry-type="expense" role="tab" aria-selected="true">支出</button>
+          <button type="button" data-entry-type="income" role="tab" aria-selected="false">进账</button>
+        </div>
+        <form id="entryForm">
+          <div class="row">
+            <div class="field"><label for="amountInput">金额（元）</label><input id="amountInput" type="number" min="0.01" step="0.01" placeholder="例如：18.50" required></div>
+            <div class="field"><label for="category">分类</label><select id="category"></select></div>
+          </div>
+          <div class="field"><label for="note">备注（可不填）</label><input id="note" maxlength="80" placeholder="例如：午饭、奶茶、红包"></div>
+          <div class="field"><label for="date">日期</label><input id="date" type="date" required></div>
+          <button class="btn full" type="submit" id="entrySubmit">记下这笔支出</button>
+        </form>
+        <p class="hint" id="entryHint">奶茶可以喝，账也要记哦 ฅ^•ﻌ•^ฅ</p>
+      </article>
+    </section>
 
-  <section class="card">
-    <h2 class="section-title">🧾 支出记录 <span class="sub" id="listMonth"></span></h2>
-    <div id="expenses"></div>
-  </section>
-  <p class="hint">使用说明：切换月份后，可分别设置该月预算并查看该月支出。数据保存在当前浏览器/设备中，不会自动同步到其他设备。清理浏览器数据或更换浏览器可能导致记录丢失，建议定期备份。</p>
-</main>
+    <section class="screen" id="screen-records" data-screen="records">
+      <article class="card" id="chartCard">
+        <div class="card-head"><h2>📊 本月圆形统计</h2><span class="soft-note" id="chartMonth">2026-10</span></div>
+        <div id="chartEmpty" class="chart-empty">这个月还没有账单，记一笔后就会生成圆形统计表啦～</div>
+        <div id="chartBody" class="chart-body" hidden>
+          <div class="donut" id="donutChart" role="img" aria-label="本月支出分类统计">
+            <div class="donut-hole"><span class="donut-total" id="donutTotal">¥0.00</span><span class="donut-label">本月支出</span></div>
+          </div>
+          <div class="legend" id="chartLegend"></div>
+        </div>
+      </article>
+      <article class="card">
+        <div class="card-head"><h2>每一笔都算数</h2><span class="soft-note" id="recordCount">0 笔</span></div>
+        <div class="filter-row" id="recordFilters" aria-label="筛选记录">
+          <button class="chip active" type="button" data-filter="all">全部</button>
+          <button class="chip" type="button" data-filter="expense">支出</button>
+          <button class="chip" type="button" data-filter="income">进账</button>
+        </div>
+        <div id="recordList" class="record-list"></div>
+      </article>
+    </section>
+
+    <section class="screen" id="screen-savings" data-screen="savings">
+      <article class="card">
+        <div class="card-head"><h2>预算小管家</h2><span class="soft-note">♡</span></div>
+        <p class="hint">给这个月留一条舒服的花钱线～</p>
+        <label for="budgetInput">本月预算（元）</label>
+        <div class="input-action">
+          <input id="budgetInput" type="number" min="0" step="0.01" placeholder="例如：2000">
+          <button class="btn" id="saveBudgetPage" type="button">保存</button>
+        </div>
+        <div class="progress" role="progressbar" aria-label="支出预算进度"><div class="bar" id="budgetBarPage"></div></div>
+        <div class="progress-note" id="budgetPageNote">先设置一个预算吧～</div>
+      </article>
+      <article class="card">
+        <div class="card-head"><h2>攒钱小进度</h2><span class="soft-note">(๑•̀ㅂ•́)و✧</span></div>
+        <p class="hint">手动填写额外的攒钱金额；本月预算没花完的部分会自动算进来，标记为“终于攒下米米了”。</p>
+        <div class="two-fields">
+          <div><label for="savedInput">手动攒下（元）</label><input id="savedInput" type="number" min="0" step="0.01" placeholder="例如：500"></div>
+          <div><label for="savingTargetInput">攒钱目标（元）</label><input id="savingTargetInput" type="number" min="0" step="0.01" placeholder="例如：3000"></div>
+        </div>
+        <button class="btn full" id="saveSaving" type="button">更新攒钱进度</button>
+        <div class="saving-breakdown">
+          <div class="saving-line"><span>手动攒下</span><strong id="manualSavedText">¥0.00</strong></div>
+          <div class="saving-line"><span>预算没花完</span><strong id="budgetLeftText">¥0.00</strong></div>
+          <div class="saving-line saved-highlight"><span>终于攒下米米了</span><strong id="totalSavedText">¥0.00</strong></div>
+        </div>
+        <div class="progress" role="progressbar" aria-label="攒钱目标进度"><div class="bar saving" id="savingBarPage"></div></div>
+        <div class="progress-note" id="savingPageNote">先设个攒钱目标吧～</div>
+      </article>
+    </section>
+
+    <section class="screen" id="screen-settings" data-screen="settings">
+      <article class="card welcome-card">
+        <div class="welcome-emoji">🌷</div>
+        <h2>欢迎来到小账本 2.0</h2>
+        <p>一个软乎乎的粉色小账本。<br>不着急变富，先把每一笔温柔记下来～</p>
+        <div class="kaomoji">(๑˃̵ᴗ˂̵)و ♡</div>
+      </article>
+      <article class="card">
+        <div class="card-head"><h2>怎么称呼你呀</h2><span class="soft-note">昵称</span></div>
+        <p class="hint">写个昵称，首页会跟你打招呼。</p>
+        <div class="input-action">
+          <input id="nicknameInput" maxlength="12" placeholder="比如：雏草姬">
+          <button class="btn" id="saveNickname" type="button">记住啦</button>
+        </div>
+      </article>
+      <article class="card">
+        <div class="card-head"><h2>今日份小鼓励</h2><button class="text-btn" id="nextEncouragement" type="button">换一句 ♡</button></div>
+        <p class="encouragement" id="encouragement"></p>
+      </article>
+      <article class="card">
+        <h2>关于小账本</h2>
+        <div class="about-row"><span>版本</span><strong>2.0</strong></div>
+        <div class="about-row"><span>风格</span><strong>嫩粉 + 暖白</strong></div>
+        <div class="about-row"><span>数据</span><strong>只保存在本机</strong></div>
+        <p class="hint">换手机、清理应用数据前，记得先备份自己的记录～</p>
+      </article>
+    </section>
+  </main>
+</div>
+
+<nav class="tabbar" aria-label="主要导航">
+  <button class="tab-btn active" type="button" data-tab="home"><span class="tab-icon">🏠</span><span>首页</span></button>
+  <button class="tab-btn" type="button" data-tab="add"><span class="tab-icon">✏️</span><span>记一笔</span></button>
+  <button class="tab-btn" type="button" data-tab="records"><span class="tab-icon">🧾</span><span>明细</span></button>
+  <button class="tab-btn" type="button" data-tab="savings"><span class="tab-icon">🪙</span><span>攒钱</span></button>
+  <button class="tab-btn" type="button" data-tab="settings"><span class="tab-icon">⚙️</span><span>设置</span></button>
+</nav>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
 <script>
 const $ = id => document.getElementById(id);
+const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
+const DB_KEY = 'xiaozhangben_v1';
+const SETTINGS_KEY = 'xiaozhangben_settings_v2';
 const today = new Date();
-const pad = n => String(n).padStart(2,'0');
-const localDate = `${today.getFullYear()}-${pad(today.getMonth()+1)}-${pad(today.getDate())}`;
-const currentMonth = localDate.slice(0,7);
-$('month').value = currentMonth; $('date').value = localDate;
+const pad = n => String(n).padStart(2, '0');
+const localDate = `${today.getFullYear()}-${pad(today.getMonth() + 1)}-${pad(today.getDate())}`;
+const currentMonth = localDate.slice(0, 7);
+const expenseCategories = ['餐饮', '购物', '交通', '娱乐', '学习', '生活', '医疗', '其他'];
+const incomeCategories = ['工资', '红包', '兼职', '理财', '退款', '其他'];
+const expenseIcons = {'餐饮':'🍜','购物':'🛍️','交通':'🚌','娱乐':'🎮','学习':'📚','生活':'🏠','医疗':'💊','其他':'🧾'};
+const incomeIcons = {'工资':'💼','红包':'🧧','兼职':'✨','理财':'📈','退款':'↩️','其他':'💰'};
+const encouragements = [
+  '你已经很棒啦，慢慢来～ (๑˃̵ᴗ˂̵)و',
+  '攒下的每一块钱，都在悄悄保护你 (｡•̀ᴗ-)✧',
+  '奶茶可以喝，账也要记哦 ฅ^•ﻌ•^ฅ',
+  '今天也辛苦啦，给自己一个小抱抱 (づ｡◕‿‿◕｡)づ',
+  '不必一下子变富，先记住每一笔就好 ♡',
+  '钱包在长大，你也在慢慢变厉害呀 (๑•̀ㅂ•́)و✧'
+];
+const chartColors = ['#e89aa5','#f3b78d','#b9d8c2','#c6b5e3','#f2cf82','#9ec9d9','#dfa8b7','#cdb8ac'];
+
 let db = {};
-try { db = JSON.parse(localStorage.getItem('xiaozhangben_v1') || '{}'); } catch(e) { db = {}; }
-function monthKey(){ return $('month').value || currentMonth; }
-function getMonthData(key=monthKey()){ if(!db[key]) db[key]={budget:0,expenses:[]}; if(!Array.isArray(db[key].expenses)) db[key].expenses=[]; return db[key]; }
-function save(){ localStorage.setItem('xiaozhangben_v1', JSON.stringify(db)); render(); }
-function money(n){ return '¥' + Number(n||0).toLocaleString('zh-CN',{minimumFractionDigits:2,maximumFractionDigits:2}); }
-function escapeHtml(s){ return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
-const icons={'餐饮':'🍜','购物':'🛍️','交通':'🚌','娱乐':'🎮','学习':'📚','生活':'🏠','医疗':'💊','其他':'🧾'};
-function render(){
- const key=monthKey(), d=getMonthData(key), total=d.expenses.reduce((s,e)=>s+Number(e.amount),0), budget=Number(d.budget)||0;
- $('spent').textContent=money(total); $('budgetLabel').textContent=money(budget);
- const pct=budget>0?total/budget*100:0;
- $('bar').style.width=Math.min(pct,100)+'%'; $('bar').classList.toggle('over',budget>0&&total>budget);
- $('progressText').textContent=budget>0?`已使用 ${Math.round(pct)}%`:'请先设置预算金额';
- $('remaining').textContent=budget>0?(total>budget?`超出 ${money(total-budget)}`:`剩余 ${money(budget-total)}`):'未设置预算';
- $('budget').value=d.budget||''; $('count').textContent=d.expenses.length+' 笔'; $('average').textContent=money(d.expenses.length?total/d.expenses.length:0);
- $('listMonth').textContent=key;
- const list=$('expenses'); list.innerHTML='';
- const items=[...d.expenses].sort((a,b)=>(b.date||'').localeCompare(a.date||'')||b.created-a.created);
- if(!items.length){list.innerHTML='<div class="empty">这个月还没有支出记录，记下第一笔吧～</div>';return;}
- for(const e of items){
-  const el=document.createElement('div'); el.className='expense';
-  el.innerHTML=`<div class="icon">${icons[e.category]||'🧾'}</div><div class="exp-main"><div class="exp-title">${escapeHtml(e.category)}${e.note?' · '+escapeHtml(e.note):''}</div><div class="exp-note">${escapeHtml(e.date||'')}</div></div><div class="amount">-${money(e.amount)}</div><button class="delete" aria-label="删除记录" title="删除">×</button>`;
-  el.querySelector('button').addEventListener('click',()=>{if(confirm('确定删除这笔支出吗？')){d.expenses=d.expenses.filter(x=>x.id!==e.id);save();}});
-  list.appendChild(el);
- }
+try { db = JSON.parse(localStorage.getItem(DB_KEY) || '{}'); } catch (error) { db = {}; }
+let settings = { nickname: '雏草姬', activeTab: 'home', encouragement: 0 };
+try { settings = { ...settings, ...JSON.parse(localStorage.getItem(SETTINGS_KEY) || '{}') }; } catch (error) {}
+
+let entryType = 'expense';
+let recordFilter = 'all';
+let activeTab = ['home','add','records','savings','settings'].includes(settings.activeTab) ? settings.activeTab : 'home';
+let toastTimer = null;
+
+function money(value) {
+  return '¥' + Number(value || 0).toLocaleString('zh-CN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
-$('month').addEventListener('change',render);
-$('saveBudget').addEventListener('click',()=>{
- const v=Number($('budget').value);
- if(!Number.isFinite(v)||v<0){alert('请输入不小于 0 的预算金额。');return;}
- getMonthData().budget=Math.round(v*100)/100; save();
+function escapeHtml(value) {
+  return String(value).replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
+}
+function normalizeMonthData(data) {
+  if (!data || typeof data !== 'object') data = {};
+  if (!Array.isArray(data.expenses)) data.expenses = [];
+  if (!Array.isArray(data.incomes)) data.incomes = [];
+  data.budget = Number(data.budget) || 0;
+  data.savingTarget = Number(data.savingTarget) || 0;
+  data.saved = Number(data.saved) || 0;
+  return data;
+}
+function monthKey() { return $('month').value || currentMonth; }
+function getMonthData(key = monthKey()) {
+  if (!db[key]) db[key] = {};
+  return normalizeMonthData(db[key]);
+}
+function saveData() { localStorage.setItem(DB_KEY, JSON.stringify(db)); }
+function saveSettings() { localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings)); }
+function allRecords(data) {
+  return [
+    ...data.expenses.map(item => ({...item, type: 'expense'})),
+    ...data.incomes.map(item => ({...item, type: 'income'}))
+  ].sort((a, b) => (b.date || '').localeCompare(a.date || '') || (b.created || 0) - (a.created || 0));
+}
+function totals(data) {
+  const income = data.incomes.reduce((sum, item) => sum + Number(item.amount || 0), 0);
+  const expense = data.expenses.reduce((sum, item) => sum + Number(item.amount || 0), 0);
+  return { income, expense, balance: income - expense };
+}
+function savingTotals(data) {
+  const summary = totals(data);
+  const manual = Number(data.saved) || 0;
+  const budgetLeft = data.budget > 0 ? Math.max(data.budget - summary.expense, 0) : 0;
+  return { manual, budgetLeft, total: manual + budgetLeft };
+}
+function savingExtraText(saving) {
+  return saving.budgetLeft > 0
+    ? ` 预算没花完的 ${money(saving.budgetLeft)} 已算进“终于攒下米米了”♡`
+    : '';
+}
+function updateProgress(bar, label, note, used, target, kind) {
+  const percent = target > 0 ? used / target * 100 : 0;
+  bar.style.width = Math.min(percent, 100) + '%';
+  bar.classList.toggle('over', kind === 'budget' && target > 0 && used > target);
+  if (label) label.textContent = target > 0 ? `${Math.round(percent)}%` : '未设置';
+  if (kind === 'saving') {
+    note.textContent = target <= 0
+      ? '先设个攒钱目标吧～'
+      : used > target
+        ? `已经超额完成，多攒了 ${money(used - target)}，好厉害 ♡`
+        : `还差 ${money(target - used)}，一点点来就好～`;
+  } else {
+    note.textContent = target <= 0
+      ? '先设置一个预算吧～'
+      : used > target
+        ? `已经超出 ${money(used - target)}，下笔轻一点点呀`
+        : `本月还能花 ${money(target - used)}，慢慢来～`;
+  }
+}
+function recordHtml(record) {
+  const isIncome = record.type === 'income';
+  const icon = isIncome ? (incomeIcons[record.category] || '💰') : (expenseIcons[record.category] || '🧾');
+  const amountClass = isIncome ? 'income' : 'expense';
+  const sign = isIncome ? '+' : '-';
+  const note = record.note ? ` · ${escapeHtml(record.note)}` : '';
+  const typeTag = isIncome ? '进账 · ' : '支出 · ';
+  return `<div class="record">
+    <div class="record-icon ${isIncome ? 'income' : ''}">${icon}</div>
+    <div class="record-main">
+      <div class="record-title">${typeTag}${escapeHtml(record.category)}${note}</div>
+      <div class="record-note">${escapeHtml(record.date || '')}</div>
+    </div>
+    <div class="record-amount ${amountClass}">${sign}${money(record.amount)}</div>
+    <button class="delete" type="button" aria-label="删除记录" title="删除" data-delete-id="${escapeHtml(record.id)}" data-delete-type="${record.type}">×</button>
+  </div>`;
+}
+function renderHome(data) {
+  const summary = totals(data);
+  const saving = savingTotals(data);
+  $('heroMonth').textContent = monthKey();
+  $('balance').textContent = money(summary.balance);
+  $('incomeTotal').textContent = money(summary.income);
+  $('expenseTotal').textContent = money(summary.expense);
+  updateProgress($('budgetBarHome'), $('budgetText'), $('budgetNote'), summary.expense, data.budget, 'budget');
+  updateProgress($('savingBarHome'), $('savingText'), $('savingNote'), saving.total, data.savingTarget, 'saving');
+  $('savingNote').textContent += savingExtraText(saving);
+  const recent = allRecords(data).slice(0, 3);
+  $('recentList').innerHTML = recent.length
+    ? recent.map(item => recordHtml(item)).join('')
+    : '<div class="empty">这个月还没有小记录～<br>点击“记一笔”开始吧 ♡</div>';
+}
+function renderRecords(data) {
+  const records = allRecords(data).filter(item => recordFilter === 'all' || item.type === recordFilter);
+  $('recordCount').textContent = `${allRecords(data).length} 笔`;
+  $('recordList').innerHTML = records.length
+    ? records.map(item => recordHtml(item)).join('')
+    : '<div class="empty">这里还空空的～<br>记下第一笔，就会热闹起来啦 (๑•̀ㅂ•́)و✧</div>';
+  $$('#recordFilters .chip').forEach(button => button.classList.toggle('active', button.dataset.filter === recordFilter));
+}
+function renderChart(data) {
+  $('chartMonth').textContent = monthKey();
+  const expenses = data.expenses.filter(item => Number(item.amount) > 0);
+  const total = expenses.reduce((sum, item) => sum + Number(item.amount), 0);
+  if (total <= 0) {
+    $('chartBody').hidden = true;
+    $('chartEmpty').hidden = false;
+    $('chartEmpty').textContent = allRecords(data).length
+      ? '这个月只有进账，还没有支出分类可以画圆饼～'
+      : '这个月还没有账单，记一笔后就会生成圆形统计表啦～';
+    return;
+  }
+
+  const grouped = new Map();
+  expenses.forEach(item => {
+    grouped.set(item.category, (grouped.get(item.category) || 0) + Number(item.amount));
+  });
+  const rows = [...grouped.entries()].sort((a, b) => b[1] - a[1]);
+  let start = 0;
+  const segments = rows.map((row, index) => {
+    const percent = row[1] / total * 100;
+    const color = chartColors[index % chartColors.length];
+    const segment = `${color} ${start.toFixed(2)}% ${(start + percent).toFixed(2)}%`;
+    start += percent;
+    return segment;
+  });
+
+  $('chartEmpty').hidden = true;
+  $('chartBody').hidden = false;
+  $('donutChart').style.background = `conic-gradient(${segments.join(',')})`;
+  $('donutChart').setAttribute(
+    'aria-label',
+    `本月支出分类统计：${rows.map(row => `${row[0]} ${money(row[1])}`).join('，')}`
+  );
+  $('donutTotal').textContent = money(total);
+  $('chartLegend').innerHTML = rows.map((row, index) => {
+    const percent = row[1] / total * 100;
+    const color = chartColors[index % chartColors.length];
+    return `<div class="legend-item">
+      <span class="legend-dot" style="background:${color}"></span>
+      <span class="legend-name">${escapeHtml(row[0])}</span>
+      <span class="legend-value">${Math.round(percent)}%</span>
+    </div>`;
+  }).join('');
+}
+function renderSavings(data) {
+  const saving = savingTotals(data);
+  $('budgetInput').value = data.budget || '';
+  $('savedInput').value = data.saved || '';
+  $('savingTargetInput').value = data.savingTarget || '';
+  $('manualSavedText').textContent = money(saving.manual);
+  $('budgetLeftText').textContent = money(saving.budgetLeft);
+  $('totalSavedText').textContent = money(saving.total);
+  updateProgress($('budgetBarPage'), null, $('budgetPageNote'), totals(data).expense, data.budget, 'budget');
+  updateProgress($('savingBarPage'), null, $('savingPageNote'), saving.total, data.savingTarget, 'saving');
+  $('savingPageNote').textContent += savingExtraText(saving);
+}
+function renderSettings() {
+  const name = (settings.nickname || '').trim() || '雏草姬';
+  if (document.activeElement !== $('nicknameInput')) $('nicknameInput').value = name;
+  $('greeting').textContent = `嗨，${name}～`;
+  $('encouragement').textContent = encouragements[settings.encouragement % encouragements.length];
+}
+function fillCategories() {
+  const categories = entryType === 'income' ? incomeCategories : expenseCategories;
+  $('category').innerHTML = categories.map(item => `<option>${item}</option>`).join('');
+  $('entrySubmit').textContent = entryType === 'income' ? '记下这笔进账' : '记下这笔支出';
+  $('entryHint').textContent = entryType === 'income'
+    ? '哇，钱包收到一份小礼物～ (๑˃̵ᴗ˂̵)و'
+    : '奶茶可以喝，账也要记哦 ฅ^•ﻌ•^ฅ';
+}
+function renderEntryType() {
+  $$('[data-entry-type]').forEach(button => {
+    const selected = button.dataset.entryType === entryType;
+    button.classList.toggle('active', selected);
+    button.setAttribute('aria-selected', String(selected));
+  });
+  fillCategories();
+  $('entryMonthHint').textContent = monthKey();
+}
+function render() {
+  if (!$('month').value) $('month').value = currentMonth;
+  const data = getMonthData();
+  renderHome(data);
+  renderRecords(data);
+  renderChart(data);
+  renderSavings(data);
+  renderEntryType();
+  renderSettings();
+}
+function switchTab(tab) {
+  if (!['home','add','records','savings','settings'].includes(tab)) tab = 'home';
+  activeTab = tab;
+  settings.activeTab = tab;
+  saveSettings();
+  $$('.screen').forEach(screen => screen.classList.toggle('active', screen.dataset.screen === tab));
+  $$('.tab-btn').forEach(button => button.classList.toggle('active', button.dataset.tab === tab));
+  window.scrollTo(0, 0);
+}
+function showToast(message) {
+  const toast = $('toast');
+  toast.textContent = message;
+  toast.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => toast.classList.remove('show'), 1800);
+}
+function shiftMonth(offset) {
+  const [year, month] = monthKey().split('-').map(Number);
+  const date = new Date(year, month - 1 + offset, 1);
+  $('month').value = `${date.getFullYear()}-${pad(date.getMonth() + 1)}`;
+  syncEntryDate();
+  render();
+}
+
+function syncEntryDate() {
+  const key = monthKey();
+  if ($('date').value.slice(0, 7) !== key) {
+    $('date').value = `${key}-${key === currentMonth ? localDate.slice(8, 10) : '01'}`;
+  }
+}
+
+$('month').value = currentMonth;
+$('date').value = localDate;
+$('prevMonth').addEventListener('click', () => shiftMonth(-1));
+$('nextMonth').addEventListener('click', () => shiftMonth(1));
+$('month').addEventListener('change', () => {
+  syncEntryDate();
+  render();
 });
-$('expenseForm').addEventListener('submit',e=>{
- e.preventDefault(); const amount=Number($('amountInput').value), date=$('date').value;
- if(!Number.isFinite(amount)||amount<=0){alert('请输入大于 0 的支出金额。');return;}
- if(!date){alert('请选择支出日期。');return;}
- const key=date.slice(0,7), d=getMonthData(key);
- d.expenses.push({id:Date.now().toString(36)+Math.random().toString(36).slice(2,7),amount:Math.round(amount*100)/100,category:$('category').value,note:$('note').value.trim(),date,created:Date.now()});
- $('amountInput').value=''; $('note').value=''; $('month').value=key; save();
+$$('.tab-btn').forEach(button => button.addEventListener('click', () => switchTab(button.dataset.tab)));
+document.addEventListener('click', event => {
+  const jump = event.target.closest('[data-go-tab]');
+  if (jump) switchTab(jump.dataset.goTab);
 });
+$$('[data-entry-type]').forEach(button => button.addEventListener('click', () => {
+  entryType = button.dataset.entryType;
+  renderEntryType();
+}));
+
+$('entryForm').addEventListener('submit', event => {
+  event.preventDefault();
+  const amount = Number($('amountInput').value);
+  const date = $('date').value;
+  if (!Number.isFinite(amount) || amount <= 0) { showToast('请输入大于 0 的金额呀'); return; }
+  if (!date) { showToast('请选择日期呀'); return; }
+  const key = date.slice(0, 7);
+  const data = getMonthData(key);
+  const record = {
+    id: Date.now().toString(36) + Math.random().toString(36).slice(2, 7),
+    amount: Math.round(amount * 100) / 100,
+    category: $('category').value,
+    note: $('note').value.trim(),
+    date,
+    created: Date.now()
+  };
+  if (entryType === 'income') data.incomes.push(record); else data.expenses.push(record);
+  $('month').value = key;
+  $('amountInput').value = '';
+  $('note').value = '';
+  saveData();
+  render();
+  showToast(entryType === 'income' ? '进账记好啦，钱包+1 ♡' : '支出记好啦 ♡');
+});
+
+$('recordFilters').addEventListener('click', event => {
+  const button = event.target.closest('[data-filter]');
+  if (!button) return;
+  recordFilter = button.dataset.filter;
+  renderRecords(getMonthData());
+});
+function handleDelete(event) {
+  const button = event.target.closest('[data-delete-id]');
+  if (!button) return;
+  if (!confirm('确定删除这条记录吗？')) return;
+  const data = getMonthData();
+  if (button.dataset.deleteType === 'income') {
+    data.incomes = data.incomes.filter(item => item.id !== button.dataset.deleteId);
+  } else {
+    data.expenses = data.expenses.filter(item => item.id !== button.dataset.deleteId);
+  }
+  saveData();
+  render();
+  showToast('删掉啦，重新记也可以～');
+}
+$('recordList').addEventListener('click', handleDelete);
+$('recentList').addEventListener('click', handleDelete);
+$('saveBudgetPage').addEventListener('click', () => {
+  const value = Number($('budgetInput').value);
+  if (!Number.isFinite(value) || value < 0) { showToast('预算金额不能小于 0 呀'); return; }
+  const data = getMonthData();
+  data.budget = Math.round(value * 100) / 100;
+  saveData();
+  render();
+  showToast('预算更新好啦 ♡');
+});
+$('saveSaving').addEventListener('click', () => {
+  const saved = Number($('savedInput').value);
+  const target = Number($('savingTargetInput').value);
+  if (!Number.isFinite(saved) || saved < 0 || !Number.isFinite(target) || target < 0) {
+    showToast('金额不能小于 0 呀');
+    return;
+  }
+  const data = getMonthData();
+  data.saved = Math.round(saved * 100) / 100;
+  data.savingTarget = Math.round(target * 100) / 100;
+  saveData();
+  render();
+  showToast('攒钱进度更新啦，真棒 (๑•̀ㅂ•́)و✧');
+});
+$('saveNickname').addEventListener('click', () => {
+  settings.nickname = $('nicknameInput').value.trim().slice(0, 12);
+  saveSettings();
+  renderSettings();
+  showToast(settings.nickname ? `记住啦，${settings.nickname} ♡` : '昵称清空啦');
+});
+$('nextEncouragement').addEventListener('click', () => {
+  settings.encouragement = (Number(settings.encouragement) + 1) % encouragements.length;
+  saveSettings();
+  renderSettings();
+});
+
+renderEntryType();
+switchTab(activeTab);
 render();
 </script>
 </body>
