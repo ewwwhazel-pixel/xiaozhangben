@@ -197,7 +197,7 @@ input:focus,select:focus{border-color:var(--accent)}
         </div>
         <form id="entryForm">
           <div class="row">
-            <div class="field"><label for="amountInput">金额（元）</label><input id="amountInput" type="number" min="0.01" step="0.01" placeholder="例如：18.50" required></div>
+            <div class="field"><label for="amountInput">金额（元）</label><input id="amountInput" type="number" min="0.01" step="0.01" required></div>
             <div class="field"><label for="category">分类</label><select id="category"></select></div>
           </div>
           <div class="field"><label for="note">备注（可不填）</label><input id="note" maxlength="80" placeholder="例如：午饭、奶茶、红包"></div>
@@ -236,7 +236,7 @@ input:focus,select:focus{border-color:var(--accent)}
         <p class="hint">给这个月留一条舒服的花钱线～</p>
         <label for="budgetInput">本月预算（元）</label>
         <div class="input-action">
-          <input id="budgetInput" type="number" min="0" step="0.01" placeholder="例如：2000">
+          <input id="budgetInput" type="number" min="0" step="0.01">
           <button class="btn" id="saveBudgetPage" type="button">保存</button>
         </div>
         <div class="progress" role="progressbar" aria-label="支出预算进度"><div class="bar" id="budgetBarPage"></div></div>
@@ -246,8 +246,8 @@ input:focus,select:focus{border-color:var(--accent)}
         <div class="card-head"><h2>攒钱小进度</h2><span class="soft-note">(๑•̀ㅂ•́)و✧</span></div>
         <p class="hint">手动填写额外的攒钱金额；本月预算没花完的部分会自动算进来，标记为“终于攒下米米了”。</p>
         <div class="two-fields">
-          <div><label for="savedInput">手动攒下（元）</label><input id="savedInput" type="number" min="0" step="0.01" placeholder="例如：500"></div>
-          <div><label for="savingTargetInput">攒钱目标（元）</label><input id="savingTargetInput" type="number" min="0" step="0.01" placeholder="例如：3000"></div>
+          <div><label for="savedInput">手动攒下（元）</label><input id="savedInput" type="number" min="0" step="0.01"></div>
+          <div><label for="savingTargetInput">攒钱目标（元）</label><input id="savingTargetInput" type="number" min="0" step="0.01"></div>
         </div>
         <button class="btn full" id="saveSaving" type="button">更新攒钱进度</button>
         <div class="saving-breakdown">
@@ -308,9 +308,9 @@ const today = new Date();
 const pad = n => String(n).padStart(2, '0');
 const localDate = `${today.getFullYear()}-${pad(today.getMonth() + 1)}-${pad(today.getDate())}`;
 const currentMonth = localDate.slice(0, 7);
-const expenseCategories = ['餐饮', '购物', '交通', '娱乐', '学习', '生活', '医疗', '其他'];
+const expenseCategories = ['饭钱', '购物', '交通', '娱乐', '学习', '生活', '医疗', '其他'];
 const incomeCategories = ['工资', '红包', '兼职', '理财', '退款', '其他'];
-const expenseIcons = {'餐饮':'🍜','购物':'🛍️','交通':'🚌','娱乐':'🎮','学习':'📚','生活':'🏠','医疗':'💊','其他':'🧾'};
+const expenseIcons = {'饭钱':'🍜','餐饮':'🍜','购物':'🛍️','交通':'🚌','娱乐':'🎮','学习':'📚','生活':'🏠','医疗':'💊','其他':'🧾'};
 const incomeIcons = {'工资':'💼','红包':'🧧','兼职':'✨','理财':'📈','退款':'↩️','其他':'💰'};
 const encouragements = [
   '你已经很棒啦，慢慢来～ (๑˃̵ᴗ˂̵)و',
