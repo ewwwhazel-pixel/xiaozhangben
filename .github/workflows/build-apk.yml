@@ -5,6 +5,7 @@ on:
   push:
     paths:
       - '小账本粉色APK工程/**'
+      - '.github/workflows/build-apk.yml'
 
 jobs:
   build:
@@ -23,14 +24,23 @@ jobs:
       - name: Set up Android SDK
         uses: android-actions/setup-android@v3
 
+      - name: Install Android SDK packages
+        run: |
+          yes | sdkmanager --licenses > /dev/null || true
+          sdkmanager --install "platforms;android-35" "build-tools;35.0.0"
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.9'
+
       - name: Build APK
         working-directory: 小账本粉色APK工程
-        run: gradle assembleDebug
+        run: gradle --no-daemon assembleDebug
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: xiaozhangben-debug-apk
           path: 小账本粉色APK工程/app/build/outputs/apk/debug/app-debug.apk
-          if-no-files-found: 
-          error
+          if-no-files-found: error
